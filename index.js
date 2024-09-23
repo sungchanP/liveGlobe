@@ -5,6 +5,7 @@ const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 const path = require('path');
+const dotenv = require('dotenv');
 const socketIO = require('socket.io');
 const AWS = require('aws-sdk');
 
@@ -18,6 +19,8 @@ app.use(compression());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
+dotenv.config();
+
 // Create a new SSM client
 const ssm = new AWS.SSM({ region: process.env.AWS_REGION });
 let IPINFO_ACCESS_TOKEN = null;
@@ -28,7 +31,7 @@ const getAccessToken = async () => {
     Name: process.env.SSM_PARAM_NAME, // The name of your parameter
     WithDecryption: true, // Decrypt the SecureString parameter
   };
-
+  console.log(params.Name);
   try {
     // Fetch the parameter from Parameter Store
     const res = await ssm.getParameter(params).promise();
